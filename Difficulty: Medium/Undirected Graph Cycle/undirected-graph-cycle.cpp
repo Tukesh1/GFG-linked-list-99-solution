@@ -5,23 +5,42 @@ using namespace std;
 // } Driver Code Ends
 class Solution {
   public:
-  bool isCycleDFS(vector<int> adj[], int s,int parent, vector<bool>&visited){
-      visited[s]= true;
-      for(auto &v :adj[s]){
-          if(v== parent) continue;
-          if(visited[v]) return true;
-          if(isCycleDFS(adj,v,s,visited)) return true;
-      }
-      return false;
+  bool isCycleBFS( vector<bool>&visited, vector<int>adj[],int u){
+      visited[u] = true;
+        queue<pair<int, int>> que;
+        que.push({u, -1});
+        while (!que.empty())
+        {
+            pair<int, int> p = que.front();
+            que.pop();
+            int src = p.first;
+            int parent = p.second;
+            // check each neighbor of source
+            for (auto &v : adj[src])
+            {
+                if (visited[v] == false)
+                {
+                    // good to go ahed
+                    visited[v] = true;
+                    que.push({v, src});
+                }
+                else if (v != parent)
+                {
+                    // if the neighbor is already visited and it is not the parent of the source then there is a cycle
+                    return true;
+                }
+            }
+        }
+        return false;
     }
   
-  
+    
     bool isCycle(int V, vector<int> adj[]) {
-  
-        vector<bool>visited(V,false);
-        for(int i=0 ;i<V;i++){
-            if(!visited[i] && isCycleDFS(adj,i,-1,visited)) return true;
-        }
+    
+    vector<bool>visited(V,false);
+    for(int i=0;i<V;i++){
+        if(!visited[i] && isCycleBFS(visited,adj,i))return true;
+    }
         return false;
     }
 };
